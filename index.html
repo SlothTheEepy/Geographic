@@ -1,65 +1,210 @@
 <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indovina lo Stato</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #6b97be;
+            margin: 0;
+            padding: 100px;
+        }
+        #game-container {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            max-width: 600px;
+            margin: auto;
+        }
+        #canvas-container {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+        }
+        canvas {
+            border-radius: 10px;
+            width: 48%;
+        }
+        #capital {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 1.2em;
+        }
+        select {
+            padding: 10px;
+            width: 80%;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-right: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            margin-top: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #score {
+            font-size: 1.2em;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <h1>Indovina lo Stato</h1>
+        <div id="canvas-container">
+            <canvas id="flagCanvas" width="300" height="200"></canvas>
+            <canvas id="monumentCanvas" width="300" height="200"></canvas>
+        </div>
+        <div>
+            <p id="capital"></p>
+        </div>
+        <div style="display: flex;">
+            <select id="stateSelect">
+                <option value="" disabled selected>Seleziona uno stato</option>
+            </select>
+            <button onclick="checkAnswer()">Indovina</button>
+        </div>
+        <div id="result"></div>
+        <div id="score">Punti: 0</div>
+    </div>
 
-<html lang ="en">
+    <script>
+        const states = [
+            {
+                name: "Italia",
+                capital: "Roma",
+                flag: "https://upload.wikimedia.org/wikipedia/en/0/03/Flag_of_Italy.svg",
+                monument: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Colosseum_in_Rome-April_2007-1-_copie_2B.jpg/1600px-Colosseum_in_Rome-April_2007-1-_copie_2B.jpg?20070519132535"
+            },
+            {
+                name: "Francia",
+                capital: "Parigi",
+                flag: "https://upload.wikimedia.org/wikipedia/en/c/c3/Flag_of_France.svg",
+                monument: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/Eiffel_tower_%28369%29.JPG/640px-Eiffel_tower_%28369%29.JPG"
+            },
+            {
+                name: "Stati Uniti",
+                capital: "Washington, D.C.",
+                flag: "https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg",
+                monument: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/WhiteHouseSouthFacade.JPG/640px-WhiteHouseSouthFacade.JPG"
+            },
+            {
+                name: "Germania",
+                capital: "Berlino",
+                flag: "https://upload.wikimedia.org/wikipedia/en/b/ba/Flag_of_Germany.svg",
+                monument: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Brandenburger_Tor_nachts.jpg/640px-Brandenburger_Tor_nachts.jpg"
+            },
+            {
+                name: "Giappone",
+                capital: "Tokyo",
+                flag: "https://upload.wikimedia.org/wikipedia/en/9/9e/Flag_of_Japan.svg",
+                monument: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Tokyo_Tower_as_seen_from_Mori_Tower.jpg/640px-Tokyo_Tower_as_seen_from_Mori_Tower.jpg"
+            },
+            {
+                name: "Australia",
+                capital: "Canberra",
+                flag: "https://upload.wikimedia.org/wikipedia/en/b/b9/Flag_of_Australia.svg",
+                monument: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Sydney_Opera_House_-_Dec_2008.jpg/640px-Sydney_Opera_House_-_Dec_2008.jpg"
+            },
+            {
+                name: "India",
+                capital: "Nuova Delhi",
+                flag: "https://upload.wikimedia.org/wikipedia/en/4/41/Flag_of_India.svg",
+                monument: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Taj_Mahal_%28Edited%29.jpeg/640px-Taj_Mahal_%28Edited%29.jpeg"
+            },
+            {
+                name: "Brasile",
+                capital: "Brasilia",
+                flag: "https://upload.wikimedia.org/wikipedia/en/0/05/Flag_of_Brazil.svg",
+                monument: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Rio_de_Janeiro_-_Cristo_Redentor_01.jpg/640px-Rio_de_Janeiro_-_Cristo_Redentor_01.jpg"
+            },
+            {
+                name: "Russia",
+                capital: "Mosca",
+                flag: "https://upload.wikimedia.org/wikipedia/en/f/f3/Flag_of_Russia.svg",
+                monument: "https://www.latitudeslife.com/wp-content/uploads/moscow-2742642_1280-e1541423792810.jpg"
+            },
+            {
+                name: "Regno Unito",
+                capital: "Londra",
+                flag: "https://upload.wikimedia.org/wikipedia/en/a/ae/Flag_of_the_United_Kingdom.svg",
+                monument: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Palace_of_Westminster_from_the_dome_on_Methodist_Central_Hall.jpg/640px-Palace_of_Westminster_from_the_dome_on_Methodist_Central_Hall.jpg"
+            }
+        ];
 
-    <head>
-        <meta charset="UTF-8"/>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-        <title>Gioco Interattivo by Giorgio Pisciotta 5F</title>
-        <style type="text/css">
-            form{text-align: center;}
-            h1 {text-align: center;}
-            h2 {margin-left: 1.116;}
+        let currentIndex = Math.floor(Math.random() * states.length);
+        let currentState = states[currentIndex];
+        let score = 0;
 
-            body{
-              font-family: "Comic Sans MS", "Comic Sans", cursive;
-              background-color: #D8CCE3;
+        function updateState() {
+            currentIndex = Math.floor(Math.random() * states.length);
+            currentState = states[currentIndex];
+            drawImage("flagCanvas", currentState.flag);
+            drawImage("monumentCanvas", currentState.monument);
+            document.getElementById("capital").textContent = currentState.capital;
+            document.getElementById("stateSelect").value = '';
+            document.getElementById("result").textContent = '';
+        }
+
+        function checkAnswer() {
+            let userAnswer = document.getElementById("stateSelect").value;
+            let resultDiv = document.getElementById("result");
+
+            if (userAnswer === currentState.name) {
+                score++;
+                resultDiv.textContent = "Corretto! Il nome dello stato è " + currentState.name + ".";
+                resultDiv.style.color = "green";
+            } else {
+                resultDiv.textContent = "Sbagliato! Il nome corretto è " + currentState.name + ".";
+                resultDiv.style.color = "red";
             }
 
-            canvas{
-              font-family: "Comic Sans MS", "Comic Sans", cursive;
-              border: 1px solid black;
-              background: #D8CCE3;
-              margin-left: 450px;
-            }
-        </style>
-    </head>
+            document.getElementById("score").textContent = "Punti: " + score;
+            setTimeout(updateState, 2000);
+        }
 
-    <body>
-        <h1>Guess the states from the capitals</h1>
+        function populateSelect() {
+            const select = document.getElementById("stateSelect");
+            states.forEach(state => {
+                const option = document.createElement("option");
+                option.value = state.name;
+                option.textContent = state.name;
+                select.appendChild(option);
+            });
+        }
 
-        <canvas id="canvas" width="1000" height="500">
-          <img id="LPDB" width="300" height="450" src="LPDB.jpg" alt="La Porta Di Brandeburgo">
-          <img id="TE" width="300" height="450" src="TE.jpg" alt="La Torre Eiffel">
-          <img id="IC" width="300" height="450" src="IC.jpg" alt="Il Colosseo">
-          <img id="LCDSB" width="300" height="450" src="LCDSB.jpg" alt="La Cattedrale Di San Basilio">
-          <img id="RUSSALKA" width="300" height="450" src="RUSSALKA.jpg" alt="RUSSALKA">
-          <img id="LCDV" width="300" height="450" src="LCDV.jpg" alt="La Cattedrale Di Vilnus">-----
-          <img id="HP" width="300" height="450" src="HP.jpg" alt="Hofburg Palace">
-          <img id="AB" width="300" height="450" src="AB.jpg" alt="Atomium Bruxelles">
-          <img id="SDSS" width="300" height="450" src="SDSS.jpg" alt="La Statua Di Santa Sofia">
-          <img id="ICDD" width="300" height="450" src="ICDD.jpg" alt="Il Castello Di Dracula">
-        </canvas>
+        function drawImage(canvasId, imageUrl) {
+            const canvas = document.getElementById(canvasId);
+            const ctx = canvas.getContext("2d");
+            const img = new Image();
+            img.onload = () => {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            };
+            img.src = imageUrl;
+        }
 
-        <form>
-          <label for="states">Seleziona uno stato:</label>
-          <select name="states" id="states">
-            <option value="1">Germania</option>
-            <option value="2">Francia</option>
-            <option value="3">Italia</option>
-            <option value="4">Russia</option>
-            <option value="5">Estonia</option>
-            <option value="6">Lituania</option>
-            <option value="7">Austria</option>
-            <option value="8">Belgio</option>
-            <option value="9">Bulgaria</option>
-            <option value="10">Romania</option>
-          </select>
-          <br><br>
-          <input type="submit" value="Invia La Risposta">
-        </form>
-        
-        <script src="script.js"></script>
-    </body>
-
+        window.onload = () => {
+            populateSelect();
+            updateState();
+        };
+    </script>
+</body>
 </html>
+
