@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+
+<html lang ="en">
+
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <title>Gioco Interattivo by Giorgio Pisciotta 5F</title>
+        <style type="text/css">
+            form{text-align: center;}
+            h1 {text-align: center;}
+            h2 {margin-left: 1.116;}
+
+            body{
+              font-family: "Comic Sans MS", "Comic Sans", cursive;
+              background-color: #D8CCE3;
+            }
+
+            canvas{
+              font-family: "Comic Sans MS", "Comic Sans", cursive;
+              border: 1px solid black;
+              background: #D8CCE3;
+              margin-left: 450px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <h1>Guess the states from the capitals</h1>
+
+        <canvas id="canvas" width="1000" height="500">
+          <img id="LPDB" width="300" height="450" src="LPDB.jpg" alt="La Porta Di Brandeburgo">
+          <img id="TE" width="300" height="450" src="TE.jpg" alt="La Torre Eiffel">
+          <img id="IC" width="300" height="450" src="IC.jpg" alt="Il Colosseo">
+          <img id="LCDSB" width="300" height="450" src="LCDSB.jpg" alt="La Cattedrale Di San Basilio">
+          <img id="RUSSALKA" width="300" height="450" src="RUSSALKA.jpg" alt="RUSSALKA">
+          <img id="LCDV" width="300" height="450" src="LCDV.jpg" alt="La Cattedrale Di Vilnus">-----
+          <img id="HP" width="300" height="450" src="HP.jpg" alt="Hofburg Palace">
+          <img id="AB" width="300" height="450" src="AB.jpg" alt="Atomium Bruxelles">
+          <img id="SDSS" width="300" height="450" src="SDSS.jpg" alt="La Statua Di Santa Sofia">
+          <img id="ICDD" width="300" height="450" src="ICDD.jpg" alt="Il Castello Di Dracula">
+        </canvas>
+
+        <form>
+          <label for="states">Seleziona uno stato:</label>
+          <select name="states" id="states">
+            <option value="1">Germania</option>
+            <option value="2">Francia</option>
+            <option value="3">Italia</option>
+            <option value="4">Russia</option>
+            <option value="5">Estonia</option>
+            <option value="6">Lituania</option>
+            <option value="7">Austria</option>
+            <option value="8">Belgio</option>
+            <option value="9">Bulgaria</option>
+            <option value="10">Romania</option>
+          </select>
+          <br><br>
+          <input type="submit" value="Invia La Risposta">
+        </form>
+        
+        <script src="script.js"></script>
+    </body>
+
+</html>
